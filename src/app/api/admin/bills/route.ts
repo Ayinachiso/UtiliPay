@@ -82,10 +82,13 @@ export async function POST(req: Request) {
   // Resolve target unit IDs
   let unitIds: string[]
   if (parsed.data.target === 'all') {
-    const { data: units, error: unitsErr } = await admin
+    const { data: units, error: unitsErr } = (await admin
       .from('units')
       .select('id')
-      .eq('community_id', adminMember.community_id)
+      .eq('community_id', adminMember.community_id)) as {
+      data: { id: string }[] | null
+      error: { message?: string } | null
+    }
     if (unitsErr || !units) {
       return NextResponse.json(
         { error: 'units_lookup_failed', detail: unitsErr?.message },
@@ -96,10 +99,13 @@ export async function POST(req: Request) {
   } else {
     // Validate that picked units belong to admin's community
     const wanted = parsed.data.unit_ids ?? []
-    const { data: units, error: unitsErr } = await admin
+    const { data: units, error: unitsErr } = (await admin
       .from('units')
       .select('id, community_id')
-      .in('id', wanted)
+      .in('id', wanted)) as {
+      data: { id: string; community_id: string }[] | null
+      error: { message?: string } | null
+    }
     if (unitsErr || !units) {
       return NextResponse.json(
         { error: 'units_lookup_failed', detail: unitsErr?.message },
