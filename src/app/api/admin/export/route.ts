@@ -94,7 +94,7 @@ export async function GET(req: Request) {
   const defaulterRows: DefaulterExportRow[] = []
 
   if (scope === 'payments' || scope === 'all') {
-    let q = admin
+    let q = (admin as any)
       .from('payments')
       .select(
         'amount, channel, provider, reference, paid_at, bill:bills!inner(title, unit:units!inner(label, community_id)), member:members(full_name)'
@@ -104,7 +104,7 @@ export async function GET(req: Request) {
     if (billTitleFilter) q = q.eq('bills.title', billTitleFilter)
     if (dateFrom) q = q.gte('paid_at', dateFrom.toISOString())
     if (dateTo) q = q.lte('paid_at', dateTo.toISOString())
-    const { data: payments } = await q
+    const { data: payments } = (await q) as { data: any[] | null }
     for (const p of payments ?? []) {
       const bill = Array.isArray(p.bill) ? p.bill[0] : p.bill
       const unit = bill
