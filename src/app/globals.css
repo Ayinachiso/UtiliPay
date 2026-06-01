@@ -1,42 +1,134 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@media (prefers-color-scheme: dark) {
+/* ============================================================
+   UtiliPay design tokens — forest green + warm bone cream
+   Light = Mercury-ish editorial confidence
+   Dark  = near-black-with-warmth + mint forest accent
+   ============================================================ */
+
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* surfaces */
+    --background: 44 47% 94%;       /* bone cream */
+    --foreground: 138 9% 11%;       /* ink with green tint */
+
+    --card: 44 60% 97%;             /* slightly warmer than bg */
+    --card-foreground: 138 9% 11%;
+
+    --popover: 44 60% 97%;
+    --popover-foreground: 138 9% 11%;
+
+    /* brand */
+    --primary: 151 42% 18%;         /* deep forest #1B4332 */
+    --primary-foreground: 44 47% 94%;
+
+    --secondary: 44 30% 88%;
+    --secondary-foreground: 151 42% 18%;
+
+    --accent: 44 33% 86%;            /* warm wash */
+    --accent-foreground: 151 42% 18%;
+
+    --muted: 44 30% 88%;
+    --muted-foreground: 44 9% 38%;   /* warm gray */
+
+    --destructive: 0 57% 40%;        /* warm red */
+    --destructive-foreground: 44 47% 94%;
+
+    --border: 44 25% 80%;            /* warm hairline */
+    --input: 44 25% 80%;
+    --ring: 151 42% 18%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    /* surfaces */
+    --background: 140 14% 7%;        /* near-black with green tint */
+    --foreground: 44 30% 91%;        /* warm cream */
+
+    --card: 140 12% 10%;
+    --card-foreground: 44 30% 91%;
+
+    --popover: 140 12% 10%;
+    --popover-foreground: 44 30% 91%;
+
+    /* brand */
+    --primary: 150 39% 56%;          /* mint forest #5FBE91 — glows in dark */
+    --primary-foreground: 140 14% 7%;
+
+    --secondary: 140 10% 13%;
+    --secondary-foreground: 44 30% 91%;
+
+    --accent: 140 10% 16%;
+    --accent-foreground: 150 39% 65%;
+
+    --muted: 140 10% 13%;
+    --muted-foreground: 44 7% 54%;
+
+    --destructive: 2 65% 61%;
+    --destructive-foreground: 140 14% 7%;
+
+    --border: 140 7% 16%;
+    --input: 140 7% 16%;
+    --ring: 150 39% 56%;
   }
 }
 
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
+  * {
+    @apply border-border;
+  }
   html {
-    color-scheme: dark;
+    -webkit-text-size-adjust: 100%;
+    /* prevent layout shift when scrollbar appears */
+    scrollbar-gutter: stable;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: 'rlig' 1, 'calt' 1, 'ss01' 1;
+  }
+  ::selection {
+    @apply bg-primary/15 text-primary;
+  }
+  /* Display font: better contextual alternates + lining nums */
+  .font-display {
+    font-feature-settings: 'liga' 1, 'dlig' 1, 'lnum' 1;
+  }
+}
+
+/* ============================================================
+   UtiliPay editorial utilities
+   ============================================================ */
+@layer utilities {
+  /* Tracking presets for editorial type */
+  .tracking-eyebrow {
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  /* Hairlines — true 1px regardless of zoom */
+  .hairline-t { border-top: 1px solid hsl(var(--border)); }
+  .hairline-b { border-bottom: 1px solid hsl(var(--border)); }
+  .hairline-l { border-left: 1px solid hsl(var(--border)); }
+  .hairline-r { border-right: 1px solid hsl(var(--border)); }
+
+  /* Big stat numbers — tabular for stable widths in tables */
+  .nums-tabular {
+    font-feature-settings: 'tnum' 1, 'lnum' 1;
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+
+  /* Soft inset shadow used on cards in dark mode */
+  .ring-inset-hair {
+    box-shadow: inset 0 0 0 1px hsl(var(--border));
+  }
+
+  /* Demo grain — subtle paper texture on bone background */
+  .bone-grain {
+    background-image:
+      radial-gradient(circle at 1px 1px, hsl(var(--foreground) / 0.025) 1px, transparent 0);
+    background-size: 24px 24px;
   }
 }
