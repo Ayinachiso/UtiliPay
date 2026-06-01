@@ -132,7 +132,7 @@ export async function GET(req: Request) {
   }
 
   if (scope === 'bills' || scope === 'all') {
-    let q = admin
+    let q = (admin as any)
       .from('bills')
       .select(
         'title, amount, due_date, status, unit:units(label, community_id), payments(amount)'
@@ -140,7 +140,7 @@ export async function GET(req: Request) {
       .order('due_date', { ascending: true })
       .limit(2000)
     if (billTitleFilter) q = q.eq('title', billTitleFilter)
-    const { data: bills } = await q
+    const { data: bills } = (await q) as { data: any[] | null }
     for (const b of bills ?? []) {
       const unit = Array.isArray(b.unit) ? b.unit[0] : b.unit
       if (!unit || unit.community_id !== adminMember.community_id) continue
