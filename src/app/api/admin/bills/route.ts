@@ -135,7 +135,7 @@ export async function POST(req: Request) {
     status: 'open',
   }))
 
-  const { data: inserted, error: insertErr } = await admin
+  const { data: inserted, error: insertErr } = await (admin as any)
     .from('bills')
     .insert(rows)
     .select('id')
@@ -147,8 +147,10 @@ export async function POST(req: Request) {
     )
   }
 
+  const safeInserted = (inserted ?? []) as { id: string }[]
+
   return NextResponse.json({
-    createdCount: inserted.length,
-    billIds: inserted.map((b) => b.id),
+    createdCount: safeInserted.length,
+    billIds: safeInserted.map((b) => b.id),
   })
 }
