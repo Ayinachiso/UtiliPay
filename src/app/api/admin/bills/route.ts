@@ -63,12 +63,15 @@ export async function POST(req: Request) {
   const admin = getSupabaseAdmin()
 
   // Find the admin member row
-  const { data: adminMember, error: adminErr } = await admin
+  const { data: adminMember, error: adminErr } = (await admin
     .from('members')
     .select('id, community_id, role')
     .eq('user_id', user.id)
     .eq('role', 'admin')
-    .maybeSingle()
+    .maybeSingle()) as {
+    data: { id: string; community_id: string; role: string } | null
+    error: { message?: string } | null
+  }
   if (adminErr || !adminMember) {
     return NextResponse.json(
       { error: 'not_an_admin', detail: adminErr?.message },
