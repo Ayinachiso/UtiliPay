@@ -70,21 +70,23 @@ export async function GET(req: Request) {
   }
 
   const admin = getSupabaseAdmin()
-  const { data: adminMember } = await admin
+  const { data: adminMember } = (await admin
     .from('members')
     .select('id, community_id')
     .eq('user_id', user.id)
     .eq('role', 'admin')
-    .maybeSingle()
+    .maybeSingle()) as {
+    data: { id: string; community_id: string } | null
+  }
   if (!adminMember) {
     return NextResponse.json({ error: 'not_an_admin' }, { status: 403 })
   }
 
-  const { data: community } = await admin
+  const { data: community } = (await admin
     .from('communities')
     .select('name')
     .eq('id', adminMember.community_id)
-    .single()
+    .single()) as { data: { name: string } | null }
 
   // ---- Build rows ----
   const paymentRows: PaymentExportRow[] = []
